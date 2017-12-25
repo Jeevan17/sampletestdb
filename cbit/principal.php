@@ -13,199 +13,214 @@
 		<html>
 				<head>
 					<title>Principal CBIT</title>
+					<link rel='stylesheet' href='style.css'>
 				</head>
 				<body>
 					<center>
 						<form action='principal.php' method='POST'>
-							Enter Roll number:
-							<input type='text' name='rollno' required>
-							<input type='submit' name='submit' value='search'>
+							<h3>Enter Roll number
+							<input type='text' name='rollno' required class='log_text' placeholder='Enter Roll Number'>
+							<input type='submit' name='submit' value='search' class='sub_btn'>
+							</h3>
 						</form>
-					</center>
-				</body>
+						<br><br>
+		";
+						if(isset($_POST["submit"]))
+						{
+							if($_POST['rollno']!=null)
+							{
+								
+								$rno = $_POST['rollno'];
+								$sql = "select * from admission where rollno='$rno'";
+								$retval = mysqli_query($conn, $sql);
+								if(! $retval )
+								{
+									echo "<script>alert('Entered RollNo does not exist!')</script>";
+									die('Could not get data: ' . mysqli_error());
+								}
+								
+								while($row = mysqli_fetch_array($retval))
+								{
+									echo "<h1>Admission Details:</h1>
+									<table border='1'>
+										<tr>
+											<th rowspan='4'><img src='data:image/jpeg;base64,".base64_encode( $row['Photo'] )."' width=150px height=200px />
+											</th>
+												<th style='padding: 5px;font-size: 20px;'>Name</th>
+												<td style='padding: 10px;font-size: 20px;'>{$row['FirstName']}"." "."{$row['LastName']}</td>
+											<tr>
+												<th style='padding: 5px;font-size: 20px;'>Roll number</th>
+												<td style='padding: 10px;font-size: 20px;'>{$row['RollNo']}</td>
+											</tr>
+											<tr>
+												<th style='padding: 5px;font-size: 20px;'>Admission No</th>
+												<td style='padding: 10px;font-size: 20px;'>{$row['AdminNo']}</td>
+											</tr>
+											<tr>
+												<th style='padding: 5px;font-size: 20px;'>Phone Number</th>
+												<td style='padding: 10px;font-size: 20px;'>{$row['Phno']}</td>
+											</tr>
+										
+										</tr>
+										<tr>
+											<th colspan='2' style='padding: 5px;font-size: 20px;'>Father Name</th>
+											<td style='padding: 10px;font-size: 20px;'>{$row['FatherName']}</td>
+										</tr>
+										<tr>
+											<th colspan='2' style='padding: 5px;font-size: 20px;'>Father Phno</th>
+											<td style='padding: 10px;font-size: 20px;'>{$row['FatherPhno']}</td>
+										</tr>
+										<tr>
+											<th colspan='2' style='padding: 5px;font-size: 20px;'>Address</th>
+											<td style='padding: 10px;font-size: 20px;'>{$row['Address']}</td>
+										</tr>
+										<tr>	
+											<th colspan='2' style='padding: 5px;font-size: 20px;'>Graduation</th>
+											<td style='padding: 10px;font-size: 20px;'>{$row['Graduation']}</td>
+										</tr>
+										<tr>
+											<th colspan='2' style='padding: 5px;font-size: 20px;'>Branch</th>
+											<td style='padding: 10px;font-size: 20px;'>{$row['Branch']}</td>
+										</tr>
+										<tr>	
+											<th colspan='2' style='padding: 5px;font-size: 20px;'>Date of Joining</th>
+											<td style='padding: 10px;font-size: 20px;'>{$row['Date of Joining']}</td>
+										</tr>
+										<tr>
+											<th colspan='2' style='padding: 5px;font-size: 20px;'>Email Id</th>
+											<td style='padding: 10px;font-size: 20px;'>{$row['email']}</td>
+										</tr>
+									</table>";
+									}
+								
+								
+								echo "<br><br><h1>Attendance Details:<h1>";
+								$sql="SELECT CourseId, Coe.Cname, Attendance from coe natural join aec where RollNo='$rno'";
+								$retval = mysqli_query($conn, $sql);
+								echo "
+								<table border='1'>
+									<tr>
+										<th style='padding: 5px;font-size: 20px;'>Course Id</th>
+										<th style='padding: 5px;font-size: 20px;'>Course Name</th>
+										<th style='padding: 5px;font-size: 20px;'>Attendance</th>
+									</tr>";
+									while($row = mysqli_fetch_array($retval))
+									{
+										echo "
+											<tr>
+												<td style='padding: 10px;font-size: 20px;'>{$row['CourseId']}</td>
+												<td style='padding: 10px;font-size: 20px;'>{$row['Cname']}</td>
+												<td style='padding: 10px;font-size: 20px;'>{$row['Attendance']}</td>
+											</tr>
+										";
+									}
+								echo"</table>";
+								
+								
+								echo "<br><h1>Marks Details:<h1>";
+								$sql="SELECT stu_coe.CourseId, Coe.Cname, Grade 
+								from coe join stu_coe on coe.CourseId=stu_coe.CourseId 
+								where RollNo='$rno'";
+								$retval = mysqli_query($conn, $sql);
+								echo "
+								<table border='1'>
+									<tr>
+										<th style='padding: 5px;font-size: 20px;'>Course Id</th>
+										<th style='padding: 5px;font-size: 20px;'>Course Name</th>
+										<th style='padding: 5px;font-size: 20px;'>Grade</th>
+									</tr>";
+									while($row = mysqli_fetch_array($retval))
+									{
+										echo "
+											<tr>
+												<td style='padding: 10px;font-size: 20px;'>{$row['CourseId']}</td>
+												<td style='padding: 10px;font-size: 20px;'>{$row['Cname']}</td>
+												<td style='padding: 10px;font-size: 20px;'>{$row['Grade']}</td>
+											</tr>
+										";
+									}
+								echo"</table>";
+								
+								
+								echo "<br><h1>Library Details:<h1>";
+								$sql="SELECT BookName
+										from library join takesbook on library.BookId=takesbook.BookId
+										where RollNo='$rno'";
+								$retval = mysqli_query($conn, $sql);
+								echo "
+								<table border='1'>
+									<tr>
+										<th style='padding: 5px;font-size: 20px;'>Books Taken</th>
+									</tr>";
+									$count=0;
+									while($row = mysqli_fetch_array($retval))
+									{
+										$count++;
+										echo "
+											<tr>
+												<td style='padding: 10px;font-size: 20px;'>{$row['BookName']}</td>
+											</tr>
+										";
+									}
+								echo"<tr><th>Total:$count</th></tr></table>";
+								
+
+
+								echo "<br><h1>Placement Details:<h1>";
+								$sql="select CompanyName, Result
+										from std_placement_details
+										where RollNo='$rno'";
+								$retval = mysqli_query($conn, $sql);
+								echo "
+								<table border='1'>
+									<tr>
+										<th style='padding: 5px;font-size: 20px;'>Company Name</th>
+										<th style='padding: 5px;font-size: 20px;'>Result</th>
+									</tr>";
+									//$count=0;
+									while($row = mysqli_fetch_array($retval))
+									{
+										//$count++;
+										echo "
+											<tr>
+												<td style='padding: 10px;font-size: 20px;'>{$row['CompanyName']}</td>
+												<td style='padding: 10px;font-size: 20px;'>{$row['Result']}</td>
+											</tr>
+										";
+									}
+								echo"</table>";
+								
+
+								echo "<br><h1>Bus Details:<h1>";
+								$sql="SELECT BusNo, SeatNo
+										from stu_bus
+										where RollNo='$rno'";
+								$retval = mysqli_query($conn, $sql);
+								echo "
+								<table border='1'>
+									<tr>
+										<th style='padding: 5px;font-size: 20px;'>Bus Number</th>
+										<th style='padding: 5px;font-size: 20px;'>Seat Number</th>
+									</tr>";
+									//$count=0;
+									while($row = mysqli_fetch_array($retval))
+									{
+										//$count++;
+										echo "
+											<tr>
+												<td style='padding: 10px;font-size: 20px;'>{$row['BusNo']}</td>
+												<td style='padding: 10px;font-size: 20px;'>{$row['SeatNo']}</td>
+											</tr>
+										";
+									}
+								echo"</table>";	
+							}
+						}
+	echo "
+				</center>
+				<!--a href='logout.php' class='sub_btn'>Logout</a-->
+			</body>
 		</html>
-	";
-		if(isset($_POST["submit"]))
-		{
-			//echo "<script>alert('1')</script>";
-			if($_POST['rollno']!=null)
-			{
-				
-				$rno = $_POST['rollno'];
-				$sql = "select * from admission where rollno='$rno'";
-				$retval = mysqli_query($conn, $sql);
-				$retval2 = mysqli_query($conn, $sql);
-				if(! $retval )
-				{
-					echo "<script>alert('Entered RollNo does not exist!')</script>";
-					die('Could not get data: ' . mysqli_error());
-				}
-				//echo"
-					//<h3>Admission Details</h3>
-					//	";
-				while($row = mysqli_fetch_array($retval))
-				{
-					//echo "<script>alert('3')</script>";
-					//$role=$row['role'];
-					echo '<img src="data:image/jpeg;base64,'.base64_encode( $row['Photo'] ).'" width=200px height=200px/><br>';
-				}
-				echo "<h1>Admission Details:</h1>
-				<table border='1'>
-					<tr>
-						<th>Admission No</th>
-						<th>Roll number</th>
-						<th>Name</th>
-						<th>Phone Number</th>
-						<th>Father Name</th>
-						<th>Father Phonenumber</th>
-						<th>Address</th>
-						<th>Graduation</th>
-						<th>Branch</th>
-						<th>Date of Joining</th>
-						<th>Email Id</th>
-					</tr>";
-					while($row = mysqli_fetch_array($retval2))
-					{
-						echo "
-							<tr>
-								<td>{$row['AdminNo']}</td>
-								<td>{$row['RollNo']}</td>
-								<td>{$row['FirstName']}"." "."{$row['LastName']}</td>
-								<td>{$row['Phno']}</td>
-								<td>{$row['FatherName']}</td>
-								<td>{$row['FatherPhno']}</td>
-								<td>{$row['Address']}</td>
-								<td>{$row['Graduation']}</td>
-								<td>{$row['Branch']}</td>
-								<td>{$row['Date of Joining']}</td>
-								<td>{$row['email']}</td>
-							</tr>
-						";
-					}
-				echo"</table>";
-				
-				
-				echo "<br><br><h1>Attendance Details:<h1>";
-				$sql="SELECT CourseId, Coe.Cname, Attendance from coe natural join aec where RollNo='$rno'";
-				$retval3 = mysqli_query($conn, $sql);
-				echo "
-				<table border='1'>
-					<tr>
-						<th>Course Id</th>
-						<th>Course Name</th>
-						<th>Attendance</th>
-					</tr>";
-					while($row = mysqli_fetch_array($retval3))
-					{
-						echo "
-							<tr>
-								<td>{$row['CourseId']}</td>
-								<td>{$row['Cname']}</td>
-								<td>{$row['Attendance']}</td>
-							</tr>
-						";
-					}
-				echo"</table>";
-				
-				
-				echo "<br><h1>Marks Details:<h1>";
-				$sql="SELECT stu_coe.CourseId, Coe.Cname, Grade 
-				from coe join stu_coe on coe.CourseId=stu_coe.CourseId 
-				where RollNo='$rno'";
-				$retval4 = mysqli_query($conn, $sql);
-				echo "
-				<table border='1'>
-					<tr>
-						<th>Course Id</th>
-						<th>Course Name</th>
-						<th>Grade</th>
-					</tr>";
-					while($row = mysqli_fetch_array($retval4))
-					{
-						echo "
-							<tr>
-								<td>{$row['CourseId']}</td>
-								<td>{$row['Cname']}</td>
-								<td>{$row['Grade']}</td>
-							</tr>
-						";
-					}
-				echo"</table>";
-				
-				
-				echo "<br><h1>Library Details:<h1>";
-				$sql="SELECT BookName
-						from library join takesbook on library.BookId=takesbook.BookId
-						where RollNo='$rno'";
-				$retval4 = mysqli_query($conn, $sql);
-				echo "
-				<table border='1'>
-					<tr>
-						<th>Books Taken</th>
-					</tr>";
-					$count=0;
-					while($row = mysqli_fetch_array($retval4))
-					{
-						$count++;
-						echo "
-							<tr>
-								<td>{$row['BookName']}</td>
-							</tr>
-						";
-					}
-				echo"<tr><th>Total:$count</th></tr></table>";
-				
-
-
-				echo "<br><h1>Placement Details:<h1>";
-				$sql="select CompanyName, Result
-						from std_placement_details
-						where RollNo='$rno'";
-				$retval4 = mysqli_query($conn, $sql);
-				echo "
-				<table border='1'>
-					<tr>
-						<th>Company Name</th>
-						<th>Result</th>
-					</tr>";
-					//$count=0;
-					while($row = mysqli_fetch_array($retval4))
-					{
-						//$count++;
-						echo "
-							<tr>
-								<td>{$row['CompanyName']}</td>
-								<td>{$row['Result']}</td>
-							</tr>
-						";
-					}
-				echo"</table>";
-				
-
-				echo "<br><h1>Bus Details:<h1>";
-				$sql="SELECT BusNo, SeatNo
-						from stu_bus
-						where RollNo='$rno'";
-				$retval4 = mysqli_query($conn, $sql);
-				echo "
-				<table border='1'>
-					<tr>
-						<th>Bus Number</th>
-						<th>Seat Number</th>
-					</tr>";
-					//$count=0;
-					while($row = mysqli_fetch_array($retval4))
-					{
-						//$count++;
-						echo "
-							<tr>
-								<td>{$row['BusNo']}</td>
-								<td>{$row['SeatNo']}</td>
-							</tr>
-						";
-					}
-				echo"</table>";	
-			}
-		}
+	"
 		
 ?>
